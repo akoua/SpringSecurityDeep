@@ -1,9 +1,7 @@
 package com.example.springsecuritylearn.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.springsecuritylearn.enums.Role;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
@@ -15,9 +13,10 @@ public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "native")
+    @GenericGenerator(name = "native", strategy = "increment")
     private Long id;
     private String number;
     private String pwd;
-    private String role;
+    @Enumerated
+    private Role role;
 }
