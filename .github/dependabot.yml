@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "weekly" #possible to use cron
+    open-pull-requests-limit: 10
+    allow:
+      - dependency-type: "direct"
+        update-type: "all"
+      - dependency-type: "transitive"
+        update-type: "wsemver-major"
+        versions: ">=1.0.0"
+#    ignore:
+#      - dependency-name: "commons-io"
+#        versions: ["2.4"]

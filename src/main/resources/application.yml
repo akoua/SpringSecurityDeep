@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/spring_security
+    username: user
+    password: root
+    type: com.zaxxer.hikari.HikariDataSource
+  jpa:
+    showSql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
