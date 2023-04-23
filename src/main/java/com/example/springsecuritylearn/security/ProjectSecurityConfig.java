@@ -14,7 +14,9 @@ public class ProjectSecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers(new AntPathRequestMatcher("/v1/api/account/**")).authenticated() //Needing authentication before to access theses urls
+                .requestMatchers(new AntPathRequestMatcher("/v1/api/account/**"),
+                        new AntPathRequestMatcher("/v1/api/balance/**")
+                ).authenticated() //Needing authentication before to access theses urls
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers(new AntPathRequestMatcher("/v1/api/notices/**"),
