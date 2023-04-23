@@ -2,7 +2,7 @@ package com.example.springsecuritylearn.security;
 
 import com.example.springsecuritylearn.entities.Customer;
 import com.example.springsecuritylearn.repository.CustomerRepository;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class CustomUserDetailsManager implements UserDetailsService {
 
     private CustomerRepository customerRepository;

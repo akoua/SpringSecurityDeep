@@ -2,13 +2,15 @@ package com.example.springsecuritylearn.entities;
 
 import com.example.springsecuritylearn.enums.Role;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Getter
 @Setter
+@With
+@NoArgsConstructor
+@AllArgsConstructor
 public class Customer {
 
     @Id
