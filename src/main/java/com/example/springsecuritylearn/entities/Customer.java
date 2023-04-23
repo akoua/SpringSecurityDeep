@@ -1,9 +1,11 @@
 package com.example.springsecuritylearn.entities;
 
 import com.example.springsecuritylearn.enums.Role;
-import jakarta.persistence.*;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Getter
@@ -11,14 +13,15 @@ import org.hibernate.annotations.GenericGenerator;
 @With
 @NoArgsConstructor
 @AllArgsConstructor
-public class Customer {
+@AttributeOverride(name = "id", column = @Column(name = "customer_id"))
+public class Customer extends Auditable<String> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "native")
-    @GenericGenerator(name = "native", strategy = "increment")
-    private Long id;
+    private String name;
+    private String email;
+    @Column(name = "mobile_number")
     private String number;
     private String pwd;
     @Enumerated
     private Role role;
+
 }
