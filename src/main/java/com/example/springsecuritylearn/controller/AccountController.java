@@ -16,6 +16,6 @@ public class AccountController {
 
     @GetMapping("/myAccount")
     public Account getAccountDetails(@RequestParam String id) {
-        return accountRepository.findByCustomer(id).orElseThrow();
+        return accountRepository.findAccountById(id).orElseThrow();
     }
 }

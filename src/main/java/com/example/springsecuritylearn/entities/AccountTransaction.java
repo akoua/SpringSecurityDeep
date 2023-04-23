@@ -29,10 +29,10 @@ public class AccountTransaction extends Auditable<String> {
     private Double closingBalance;
 
     @JoinColumn(name = "customer_id")
-    @ManyToOne(targetEntity = Customer.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = Customer.class, fetch = FetchType.EAGER)
     private Customer customer;
 
     @JoinColumn(name = "account_id")
-    @ManyToOne(targetEntity = Account.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = Account.class, fetch = FetchType.EAGER)
     private Account account_id;
 }

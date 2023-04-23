@@ -17,6 +17,6 @@ public class Account extends Auditable<String> {
     private String branchAddress;
 
     @JoinColumn(name = "customer_id")
-    @ManyToOne(targetEntity = Customer.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = Customer.class, fetch = FetchType.EAGER)
     private Customer customer;
 }
