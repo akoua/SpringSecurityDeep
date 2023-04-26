@@ -1,5 +1,6 @@
 package com.example.springsecuritylearn.security;
 
+import com.example.springsecuritylearn.entities.Authority;
 import com.example.springsecuritylearn.entities.Customer;
 import com.example.springsecuritylearn.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class OwnUsernamePwdAuthenticationProvider implements AuthenticationProvider {
@@ -37,9 +40,8 @@ public class OwnUsernamePwdAuthenticationProvider implements AuthenticationProvi
             };
         } else if (customers.size() == 1) {
             String pwd = authentication.getCredentials().toString();
-            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(customers.get(0).getRole().name()));
             if (passwordEncoder.matches(pwd, customers.get(0).getPwd())) {
-                return new UsernamePasswordAuthenticationToken(username, pwd, authorities);
+                return new UsernamePasswordAuthenticationToken(username, pwd, getGrantedAuthorities(customers.get(0).getAuthorities()));
             } else {
                 throw new BadCredentialsException("InvalidPassword");
             }
@@ -51,5 +53,13 @@ public class OwnUsernamePwdAuthenticationProvider implements AuthenticationProvi
     @Override
     public boolean supports(Class<?> authentication) {
         return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
+    }
+
+    private List<GrantedAuthority> getGrantedAuthorities(Set<Authority> authorities) {
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        for (Authority authority : authorities) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(authority.getName()));
+        }
+        return grantedAuthorities;
     }
 }

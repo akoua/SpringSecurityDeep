@@ -16,6 +16,6 @@ public class AccountController {
 
     @GetMapping("/myAccount")
     public Account getAccountDetails(@RequestParam String id) {
-        return accountRepository.findAccountById(id).orElseThrow();
+        return accountRepository.findAccountById(id).orElseThrow(() -> new RuntimeException("Account not found"));
     }
 }
