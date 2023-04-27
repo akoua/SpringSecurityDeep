@@ -1,12 +1,14 @@
 package com.example.springsecuritylearn.security;
 
 import com.example.springsecuritylearn.security.filter.CsrfCookieFilter;
+import com.example.springsecuritylearn.security.provider.EmailPwdAuthProvider;
+import com.example.springsecuritylearn.security.provider.OwnNumberPwdAuthenticationProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -19,6 +21,13 @@ import java.util.Collections;
 
 @Configuration
 public class ProjectSecurityConfig {
+
+    @Autowired
+    private OwnNumberPwdAuthenticationProvider ownNumberPwdAuthenticationProvider;
+
+    @Autowired
+    private EmailPwdAuthProvider emailPwdAuthProvider;
+
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -42,6 +51,7 @@ public class ProjectSecurityConfig {
                                     new AntPathRequestMatcher("/v1/api/login/**"))
                             .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
                 })
+//                .addFilterBefore(new BusinessLogicFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests()
                 .requestMatchers(new AntPathRequestMatcher("/v1/api/account/**"),
@@ -63,11 +73,27 @@ public class ProjectSecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    /*@Bean
+    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
+        AuthenticationManagerBuilder authenticationManagerBuilder =
+                http.getSharedObject(AuthenticationManagerBuilder.class);
+        authenticationManagerBuilder.authenticationProvider(customAuthProvider);
+        authenticationManagerBuilder.inMemoryAuthentication()
+                .withUser("memuser")
+                .password(passwordEncoder().encode("pass"))
+                .roles("USER");
+        return authenticationManagerBuilder.build();
+    }*/
+
+    @Autowired
+    public void configure(AuthenticationManagerBuilder auth) {
+        auth.authenticationProvider(ownNumberPwdAuthenticationProvider)
+                .authenticationProvider(emailPwdAuthProvider);
     }
 
+//    AuthenticationManager authenticationManagerUser() {
+//        return new ProviderManager(List.of(new OwnNumberPwdAuthenticationProvider(), new EmailPwdAuthProvider()));
+//    }
 
     /*@Bean
     public InMemoryUserDetailsManager createInMemoryUser(){
