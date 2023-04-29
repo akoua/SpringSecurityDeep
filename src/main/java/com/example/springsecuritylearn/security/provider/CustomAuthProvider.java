@@ -11,12 +11,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Component
-public class EmailPwdAuthProvider implements AuthenticationProvider {
+@Service
+public class CustomAuthProvider implements AuthenticationProvider {
     @Autowired
     private CustomerRepository repository;
     @Autowired
@@ -25,6 +25,8 @@ public class EmailPwdAuthProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         List<Customer> customers = repository.findCustomersByEmail(authentication.getName());
+        customers = !customers.isEmpty() ? customers :
+                repository.findCustomersByNumber(authentication.getName());
         if (customers.size() > 1) {
             throw new TooManyRowsAffectedException("trop de numéro asscocié", 1, customers.size());
         } else if (customers.size() == 1) {
