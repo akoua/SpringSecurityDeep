@@ -1,12 +1,13 @@
 package com.example.springsecuritylearn.security;
 
 import com.example.springsecuritylearn.security.filter.CsrfCookieFilter;
+import com.example.springsecuritylearn.security.oauth.KeyCloakRoleConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -18,13 +19,17 @@ import java.time.Duration;
 import java.util.Collections;
 
 @Configuration
+@EnableMethodSecurity(prePostEnabled = true)
 public class ProjectSecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+
+        JwtAuthenticationConverter jwtAuthConverter = new JwtAuthenticationConverter();
+        jwtAuthConverter.setJwtGrantedAuthoritiesConverter(new KeyCloakRoleConverter());
+
         http
-                .securityContext().requireExplicitSave(false)
-                .and().sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors().configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
@@ -58,15 +63,16 @@ public class ProjectSecurityConfig {
                         new AntPathRequestMatcher("/v1/api/contact/**"),
                         new AntPathRequestMatcher("/v1/api/login/register")).permitAll() //No authentication is needs
                 .and()
-                .formLogin()
-                .and().httpBasic();
-
+                .oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthConverter);
 
         return http.build();
     }
 
-    @Bean
+//    public JwtDecoder jwtDecoder(){
+//        return new JwtDecode
+//    }
+    /*@Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
+    }*/
 }

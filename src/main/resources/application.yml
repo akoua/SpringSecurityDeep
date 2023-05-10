@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 8081
 spring:
   datasource:
     driverClassName: org.postgresql.Driver
@@ -12,6 +12,12 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8082/realms/dev_spring_security
+          jwt-set-uri: http://localhost:8082/realms/dev_spring_security/protocol/openid-connect/certs
 
 logging:
   level:
